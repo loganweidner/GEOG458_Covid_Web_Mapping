@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display a map on a webpage</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="legend"></div>
+    <div id="title">
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoid2VpZG5lcjEiLCJhIjoiY2xkbWhmbGhxMDlrMjNwbzljMTkxenU2ciJ9.xlXU1hprIgGGmMtm9PHQTA';
+        const map = new mapboxgl.Map({
+            container: 'map', // container ID
+            style: 'mapbox://styles/mapbox/dark-v11', // style URL
+            center: [-74.5, 40], // starting position [lng, lat]
+            zoom: 9, // starting zoom
+            projection: 'albers'
+        });
+
+        map.on('load', () =>{
+            //load covid rate data
+            map.addSource('covidrates', {
+                type: 'geojson',
+                data: './assets/us-covid-2020-rates.geojson'
+            });
+        })
+    </script>
+    
+</body>
+</html>
