@@ -2,25 +2,83 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Display a map on a webpage</title>
+<title>United States Covid Counts 2020</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
 <style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* the layout of the legend panel */
+        #legend {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 110px;
+            background: #fff;
+            margin-right: 20px;
+            margin-bottom: 40px;
+            padding: 10px 20px 10px 10px;
+            border-radius: 3px;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* each line for a break */
+        .break {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        /* basic style for a dot/circle */
+        .dot {
+            display: inline-block;
+            margin-top: 5px;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        /* the label for the dot */
+        .dot-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-style: italic;
+        }
+
+        /* the text color of a hyper link */
+        a {
+            color: black
+        }
 </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="legend"></div>
+    <div id="legend" style="text-align: left;"></div>
     <div id="title">
     <script>
+        //mapbox api token
         mapboxgl.accessToken = 'pk.eyJ1Ijoid2VpZG5lcjEiLCJhIjoiY2xkbWhmbGhxMDlrMjNwbzljMTkxenU2ciJ9.xlXU1hprIgGGmMtm9PHQTA';
+        const //declare vars for proportional symbol
+            grades = [100, 50000, 300000],
+            colors = ['rgb(208,209,230)', 'rgb(103,169,207)', 'rgb(1,108,89)'],
+            radii = [5, 15, 20];
+        //declare map object
         const map = new mapboxgl.Map({
             container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/streets-v12', // style URL
+            style: 'mapbox://styles/mapbox/dark-v11', // style URL
             //center and zoom default to show entire US
             center: [-98, 38], // starting position [lng, lat]
             zoom: 4.2, // starting zoom
@@ -31,19 +89,62 @@ body { margin: 0; padding: 0; }
             //load covid count data
             map.addSource('covidcounts', {
                 type: 'geojson',
-                data: './assets/us-covid-2020-counts.geojson'
+                data: '../assets/us-covid-2020-counts.geojson'
             });
 
-            map.addLayer({
+            map.addLayer({ //proportional symbol layer
                 'id': 'covidcounts-point',
-                'type': 'point',
+                'type': 'circle',
                 'source': 'covidcounts',
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.6,
-                'circle-radius': 40
+                'paint':{ // set style of proportional symbols
+                    'circle-radius': {
+                        'property': 'cases',
+                        'stops': [
+                            [grades[0], radii[0]],
+                            [grades[1], radii[1]],
+                            [grades[2], radii[2]]
+                        ]
+                    },
+                    'circle-color': {
+                        'property': 'cases',
+                        'stops': [
+                            [grades[0], colors[0]],
+                            [grades[1], colors[1]],
+                            [grades[2], colors[2]]
+                        ]
+                    },
+                    'circle-stroke-color': 'white',
+                    'circle-stroke-width': 1,
+                    'circle-opacity': 0.6,
+                }
             });
-        })
+
+            map.on('click', 'covidcounts-point', (event) => { //make popup showing case number and county of symbol
+                new mapboxgl.Popup()
+                    .setLngLat(event.features[0].geometry.coordinates)
+                    .setHTML(`<strong>Covid Count:</strong> ${event.features[0].properties.cases}<br>
+                    <strong>County:</strong> ${event.features[0].properties.county}, ${event.features[0].properties.state}`)
+                    .addTo(map);
+            });
+        });
+        //create legend object
+        const legend = document.getElementById('legend');
+        //create grades/labels
+        var labels = ['<strong>Covid Count'],
+            vbreak;
+        //iterate through grades, make scale for it
+        for(var i = 0; i < grades.length; i++) {
+            vbreak = grades[i];
+            dot_radii = 2 * radii[i];
+            labels.push('<p class="break"><i class="dot" style="background:' + colors[i] + '; width: ' + dot_radii + 
+                'px; height: ' + dot_radii + 'px; "></i> <span class="dot-label" style="top: ' + dot_radii / 2 + 
+                'px;">' + vbreak + '</span></p>');
+        }
+        //add data source
+        const source = '<p style="text-align: right; font-size:10pt">Source: <a href="https://earthquake.usgs.gov/earthquakes/">USGS</a></p>';
+        //combine html code
+        legend.innerHTML = labels.join('') + source;
+
     </script>
     
 </body>
