@@ -24,7 +24,7 @@
         #legend {
             position: absolute;
             bottom: 0;
-            right: 0;
+            left: 5;
             width: 110px;
             background: #fff;
             margin-right: 20px;
@@ -33,6 +33,31 @@
             border-radius: 3px;
             text-align: center;
             font-family: 'Open Sans', sans-serif;
+        }
+
+        /**
+        * Set rules for how the map overlays
+        * (information box and legend) will be displayed
+            on the page. */
+            .map-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(0, 0, 0, 0.2);
+            margin-left: 20px;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
+
+        #features {
+            top: 0;
+            height: 120px;
+            margin-top: 20px;
+            width: 250px;
         }
 
         /* each line for a break */
@@ -68,13 +93,19 @@
     <div id="map"></div>
     <div id="legend" style="text-align: left;"></div>
     <div id="title">
+        <h2>U.S. 2020 Covid Cases</h2>
+    <div class='map-overlay' id='features'>
+        <h2>US 2020 Covid Cases</h2>
+        <div id='text-description'>
+            <p>Click on a county to see the area's covid count.</p>
+        </div>
     <script>
         //mapbox api token
         mapboxgl.accessToken = 'pk.eyJ1Ijoid2VpZG5lcjEiLCJhIjoiY2xkbWhmbGhxMDlrMjNwbzljMTkxenU2ciJ9.xlXU1hprIgGGmMtm9PHQTA';
         const //declare vars for proportional symbol
-            grades = [100, 50000, 300000],
-            colors = ['rgb(208,209,230)', 'rgb(103,169,207)', 'rgb(1,108,89)'],
-            radii = [5, 15, 20];
+            grades = [100, 2000, 50000, 300000],
+            colors = ['#0BB3D9', '#0578A6', '#034873', '#D90754'],
+            radii = [5, 10, 15, 20];
         //declare map object
         const map = new mapboxgl.Map({
             container: 'map', // container ID
@@ -102,7 +133,8 @@
                         'stops': [
                             [grades[0], radii[0]],
                             [grades[1], radii[1]],
-                            [grades[2], radii[2]]
+                            [grades[2], radii[2]],
+                            [grades[3], radii[3]]
                         ]
                     },
                     'circle-color': {
@@ -110,7 +142,8 @@
                         'stops': [
                             [grades[0], colors[0]],
                             [grades[1], colors[1]],
-                            [grades[2], colors[2]]
+                            [grades[2], colors[2]],
+                            [grades[3], colors[3]]
                         ]
                     },
                     'circle-stroke-color': 'white',
@@ -141,7 +174,7 @@
                 'px;">' + vbreak + '</span></p>');
         }
         //add data source
-        const source = '<p style="text-align: right; font-size:10pt">Source: <a href="https://earthquake.usgs.gov/earthquakes/">USGS</a></p>';
+        const source = '<p style="text-align: right; font-size:10pt">Source: <a href="https://github.com/nytimes/covid-19-data/blob/43d32dde2f87bd4dafbb7d23f5d9e878124018b8/live/us-counties.csv">New York Times</a></p>';
         //combine html code
         legend.innerHTML = labels.join('') + source;
 
