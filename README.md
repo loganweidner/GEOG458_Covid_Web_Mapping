@@ -5,7 +5,7 @@ This project uses MapBox JS to make a choropleth web map application showing cov
 
 ## Map 1: Choropleth Map of Covid Rates
 ![choropleth map showing covid rates in United States](imgs/map_1.png)
-> [Use the map here.](https://loganweidner.github.io/GEOG458_Covid_Web_Mapping/map_1.html)
+> [Use the map here.](https://loganweidner.github.io/GEOG458_Covid_Web_Mapping/js/map_1.html)
 
 This is a map that allows the user to get a general idea of US covid rates, as well as use their mouse to hover over specific areas to learn the exact covid rate of said area. The description in the top left corner tells the user to hover over a county, and then replaces that text with the county information when the user is hovering over a county.
 
@@ -13,6 +13,6 @@ Please note that the Map Box projection functions are not working for this map, 
 
 ## Map 2: Proportional Symbol Map of Covid Cases
 ![Proportional symbol map showing covid cases in United States](imgs/map_2.png)
-> [Use the map here.](https://loganweidner.github.io/GEOG458_Covid_Web_Mapping/map_1.html)
+> [Use the map here.](https://loganweidner.github.io/GEOG458_Covid_Web_Mapping/js/map_1.html)
 
 This is a map that allows the user to see where the most covid cases were being recorded in 2020. The description box tells the user to click on a symbol to view the specific information on that county. When the symbol is clicked, a box will pop up that shows the user the name of the county, states, and recorded covid cases.
